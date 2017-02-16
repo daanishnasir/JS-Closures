@@ -186,6 +186,7 @@ invokes privateMethod. Invoke this by calling module.publicMethod(); outside
 the module scope */
 
 var module = (function() {
+
   var person = {
     name: "phillip",
     age: 29,
@@ -222,14 +223,15 @@ var secondLevelFriends = ["Anne", "Harry", "Quinton"];
 var allUsers = ["Tom", "Dick", "Harry", "Anne", "Quinton", "Katie", "Mary"];
 
 function findPotentialFriends(existingFriends) {
-    return function(user){
-      return existingFriends.indexOf(user)===-1;
+    return function(friend){
+      return existingFriends.indexOf(friend)===-1;
     };
 }
 
-var isNotAFriend = findPotentialFriends( friends );
-isNotAFriend(allUsers[0]); // false
-isNotAFriend(secondLevelFriends[2]); // true
+
+var isNotAFriend = findPotentialFriends(friends);   //existing friends = friends array
+isNotAFriend(allUsers[0]); // false    //friend = allUsers[0]
+isNotAFriend(secondLevelFriends[2]); // true      //friend =  secondLevelFriends[2]
 
 
 /******************************************************************************\
@@ -239,8 +241,14 @@ isNotAFriend(secondLevelFriends[2]); // true
 method, find all potential second level friends as well as potential friends
 from allUsers. */
 
-var potentialSecondLevelFriends = "?";
-var allPotentialFriends = "?";
+var potentialSecondLevelFriends = secondLevelFriends.filter(function(friend){
+  return isNotAFriend(friend);
+});
+
+
+var allPotentialFriends = allUsers.filter(function(friend){
+  return isNotAFriend(friend);
+});
 
 
 /******************************************************************************\
@@ -264,10 +272,14 @@ to 5. What we need to do is console.log(i) so that it logs like so:
  */
 
 function timeOutCounter() {
-  for (var i = 0; i <= 5; i++) {
-    setTimeout(function() {
-    	console.log(i)
-	}, i * 1000)
+  function counter(preservedI){
+    return function(){
+      console.log(preservedI)
+    }
   }
+      for (var i = 0; i <= 5; i++) {
+          setTimeout(counter, i*100);
+	}
+
 }
 timeOutCounter();
